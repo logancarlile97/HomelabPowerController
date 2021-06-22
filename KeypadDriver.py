@@ -3,7 +3,7 @@ import time
 from configReader import configReader
 
 
-class keypad():
+class KeypadDriver():
     """
     A class to drive the keypad
     """
