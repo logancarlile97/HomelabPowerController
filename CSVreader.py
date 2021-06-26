@@ -12,7 +12,7 @@ class CSVreader:
         #Create and configure logger
         LOG_Format = "%(levelname)s %(asctime)s - %(message)s"
         logging.basicConfig(filename = 'test.log',
-                            level = logging.INFO,
+                            level = logging.DEBUG,
                             format = LOG_Format)
 
         self.logger = logging.getLogger()
