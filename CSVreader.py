@@ -1,18 +1,20 @@
 import csv
 import logging
-
+from configReader import configReader
 
 class CSVreader:
     """Read CSV files and parse into a list of lists"""
 
     def __init__(self, file):
+        self.config = configReader('config.ini')
+        
         self.file = file
         self.header = False
 
         #Create and configure logger
         LOG_Format = "%(levelname)s %(asctime)s - %(message)s"
-        logging.basicConfig(filename = 'test.log',
-                            level = logging.DEBUG,
+        logging.basicConfig(filename = self.config.getLogConfig('logFile'),
+                            level = self.config.getLogConfig('logLevel'),
                             format = LOG_Format)
 
         self.logger = logging.getLogger()
@@ -36,9 +38,10 @@ class CSVreader:
             log.debug(f'Reading specified CSV file')
             csvFile = csv.reader(file, delimiter=',') #Read the csv file
         
-        except FileNotFoundError: #If file could not be opened
+        except FileNotFoundError as e: #If file could not be opened
             print(f'Could not open specified file \'{self.file}\'')
             log.error(f'Could not open specified CSV file {self.file}')
+            log.error(f'Exception raised: \n\t{e}')
             return [] #Retuen an empty list
 
         else:
@@ -64,5 +67,6 @@ class CSVreader:
                     row[x] = row[x].lstrip()
                     row[x] = row[x].rstrip()
             
-            log.info()
+            log.info(f'Parsed CSV file contains entries: \n\t{parsedCSV}')
             return parsedCSV 
+            

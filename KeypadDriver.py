@@ -14,17 +14,17 @@ class KeypadDriver():
         GPIO.setwarnings(False)
 
         # Key layout on keypad
-        self.KEYS = config.getKeypadConfig('keypadLayout')
+        self.KEYS = self.config.getKeypadConfig('keypadLayout')
 
         # Set the GPIO pins for columns and rows,
         # make sure they are in the right order or keys will be backwards
-        self.ROW = config.getKeypadConfig('rowPins')
-        self.COL = config.getKeypadConfig('columnPins')
+        self.ROW = self.config.getKeypadConfig('rowPins')
+        self.COL = self.config.getKeypadConfig('columnPins')
 
         #Create and configure logger
         LOG_Format = "%(levelname)s %(asctime)s - %(message)s"
-        logging.basicConfig(filename = 'test.log',
-                            level = logging.DEBUG,
+        logging.basicConfig(filename = self.config.getLogConfig('logFile'),
+                            level = self.config.getLogConfig('logLevel'),
                             format = LOG_Format)
 
         self.logger = logging.getLogger()
