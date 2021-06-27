@@ -37,7 +37,7 @@ class LcdDriver():
 
         log.debug(f'lcd top message: {top}')
         log.debug(f'lcd bottom message: {bottom}')
-        time.sleep(1) #Delay to allow any previous lcd message to be read by user
+        
         if len(top) == 0:
             adjTop = top
         else:
