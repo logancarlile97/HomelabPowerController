@@ -1,12 +1,12 @@
 import csv
 import logging
-from configReader import configReader
+from ConfigReader import ConfigReader
 
 class CSVreader:
     """Read CSV files and parse into a list of lists"""
 
     def __init__(self, file):
-        self.config = configReader('config.ini')
+        self.config = ConfigReader('config.ini')
         
         self.file = file
         self.header = False

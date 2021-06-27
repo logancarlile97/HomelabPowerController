@@ -1,7 +1,7 @@
 from configparser import ConfigParser
 import ast
 
-class configReader:
+class ConfigReader:
 
     def __init__(self, configFile):
 
