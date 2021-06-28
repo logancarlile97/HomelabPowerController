@@ -9,7 +9,7 @@ class HLPC:
     Class to allow for all frontend operations of the HLPC program.
     """
     
-    def __init__(self) -> None:
+    def __init__(self):
         self.config = ConfigReader('config.ini')
 
         #Create and configure logger
@@ -23,16 +23,18 @@ class HLPC:
         self.lcd = LcdDriver()
         self.keypad = KeypadDriver()
 
+        self.userVerified = Authenticator.verified()
+
     def remoteShutdown(self):
         """
         Method to run a remote shutdown of hosts via SSH. Uses CSV file specified in config.ini
         """
-    
+        pass
     def remotePowerOn(self):
         """
         Method to run a remote power on of hosts. Uses CSV file specified in config.ini.
         """
-    
+        pass
     def mainMenu(self):
         """
         Main Menu for HLPC Program allows user to select operation to run via LCD screen and keypad
@@ -40,6 +42,7 @@ class HLPC:
         keypad = self.keypad
         lcd = self.lcd
         log = self.log
+        userVerified = self.userVerified #Will return true or false depending on if user could be verified
 
         mainMenuPages = [['Shutdown: A', 'PowerOn: B']] #Text to show depending on current main menu page, the second index determins top [0] or bottom [1] of LCD
         crntMenuPage = 0
@@ -60,9 +63,17 @@ class HLPC:
             
             else: #Check if user selected an option from menu
                 if (pressedKey == 'A'): #If user presses A
-                    pass
+                    lcd.print('HLPC Shutdown', 'Loading...')
+                    log.info(f'User has selected HLPC Shutdown')
+                    time.sleep(2)
+                    if(userVerified): #If user can be verified then proceed with shutdown
+                        self.remoteShutdown()
                 elif (pressedKey == 'B'):
-                    pass
+                    lcd.print('HLPC Power On', 'Loading...')
+                    log.info(f'User has selected HLPC Power On')
+                    time.sleep(2)
+                    if(userVerified):
+                        self.remotePowerOn()
 
                 else:
                     lcd.clear()
@@ -71,6 +82,3 @@ class HLPC:
             
             lcd.clear()
             lcd.print(mainMenuPages[crntMenuPage][0],mainMenuPages[crntMenuPage][1]) #Update main menu
-
-            
-            
