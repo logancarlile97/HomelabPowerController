@@ -23,7 +23,7 @@ class HLPC:
         self.lcd = LcdDriver()
         self.keypad = KeypadDriver()
 
-        self.userVerified = Authenticator.verified()
+        self.userVerified = Authenticator().verified()
 
     def remoteShutdown(self):
         """
