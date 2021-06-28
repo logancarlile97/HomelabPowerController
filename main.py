@@ -34,7 +34,7 @@ class HLPC:
         lcd = self.lcd
         keypad = self.keypad
 
-        hostname = subprocess.run('hostname --fqdn', shell=True, capture_output=True, text = True).stdout
+        hostname = subprocess.run('hostname', shell=True, capture_output=True, text = True).stdout
         ipAddress = subprocess.run('hostname -I', shell=True, capture_output=True, text = True).stdout
         hostname = hostname.strip()
         ipAddress = ipAddress.strip()
