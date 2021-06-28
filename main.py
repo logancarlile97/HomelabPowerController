@@ -55,8 +55,9 @@ class HLPC:
                 else:
                     shortIP += ipAddress[i+x]
             lcd.print(f'{hostname}', f'{shortIP}')
-            time.sleep(.7)
+            time.sleep(1)
             if (atEnd):
+                lcd.print('', f'{ipAddress}')
                 break
 
         keypad.press() #Wait for user to press a key to contine
