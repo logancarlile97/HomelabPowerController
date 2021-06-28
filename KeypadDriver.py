@@ -145,6 +145,9 @@ class KeypadDriver():
                             pressedKey = KEYS[i][j]
                             return pressedKey
 
+                        while GPIO.input(ROW[i]) == 0: # While a key is being held down this will loop
+                                time.sleep(0.2) # Sleep to prevent key bouncing
+                                pass
                     # Set the column pin to
                     GPIO.output(COL[j], 1)
 
