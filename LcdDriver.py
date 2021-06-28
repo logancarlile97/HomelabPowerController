@@ -9,7 +9,7 @@ class LcdDriver():
     A class to handle the lcd
     """
     def __init__(self):
-        self.config = ConfigReader()
+        self.config = ConfigReader('config.ini')
 
         # Assign each lcd pin to GPIO
         lcd_rs = digitalio.DigitalInOut(board.D17)  # GPIO 17 pin 11
