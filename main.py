@@ -111,6 +111,10 @@ class HLPC:
                 
                 log.info(f'SSH output for {machineName} is: \n{sshOutput}\n{sshErrOutput}')
                 log.info(f'SSH return code is: {sshRtrnCode}')
+                if(sshRtrnCode != 0): #If ssh command was not succesful
+                    lcd.print(f'Error Please',f'Check Logs')
+                    log.error(f'Error shuting down {machineName}, ssh return code is: {sshRtrnCode}')
+                    log.error(f'SSH output: \n{sshOutput}\n{sshErrOutput}')
                 time.sleep(2)
             else: #If ping was not succesful
                 log.warning(f'{machineName} was not determind to be alive, assumed dead')
