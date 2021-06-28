@@ -55,7 +55,7 @@ class HLPC:
                 else:
                     shortIP += ipAddress[i+x]
             lcd.print(f'{hostname}', f'{shortIP}')
-            time.sleep(.1)
+            time.sleep(.3)
             if (atEnd):
                 break
 
