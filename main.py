@@ -36,7 +36,9 @@ class HLPC:
 
         hostname = subprocess.run('hostname --fqdn', shell=True, capture_output=True, text = True).stdout
         ipAddress = subprocess.run('hostname -I', shell=True, capture_output=True, text = True).stdout
-
+        hostname = hostname.strip()
+        ipAddress = ipAddress.strip()
+        
         lcd.print('Press any key', 'to exit')
         time.sleep(2)
         log.info(f'print IP has gathered that the host hostname is {hostname}, and the ip is {ipAddress}')
