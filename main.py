@@ -80,7 +80,7 @@ class HLPC:
             rmtUsr = remoteInfo[2]
             cmd = remoteInfo[3]
             pingCmd = f'ping -c 3 {ipAddr}'
-            sshCmd = f'ssh -t -t -o BatchMode=yes -o ConnectTimeout=15 -v {rmtUsr}@{ipAddr} \'{cmd}\'' 
+            sshCmd = f'ssh -q -t -t -o BatchMode=yes -o ConnectTimeout=15 {rmtUsr}@{ipAddr} \'{cmd}\'' 
 
             log.debug(f'Current constructed ping command is: \n\t{pingCmd}')
             log.debug(f'Current constructed ssh command is: \n\t{sshCmd}')
