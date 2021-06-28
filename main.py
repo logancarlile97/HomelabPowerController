@@ -85,6 +85,7 @@ class HLPC:
             log.debug(f'Current constructed ping command is: \n\t{pingCmd}')
             log.debug(f'Current constructed ssh command is: \n\t{sshCmd}')
             log.warning(f'Checking if {machineName} is alive')
+            lcd.print(f'Checking', f'{machineName}')
             
             ping = subprocess.run(pingCmd, shell=True, capture_output=True, text = True) #Run a ping command for the current machine
             pingRtrnCode = ping.returncode #Capture return code
@@ -92,7 +93,6 @@ class HLPC:
             
             log.info(f'Ping output for {machineName} is: \n{pingOutput}')
             log.info(f'Ping return code is: {pingRtrnCode}')
-            lcd.print(f'Checking', f'{machineName}')
             time.sleep(2)
             
             if(pingRtrnCode == 0): #If ping was succesful
