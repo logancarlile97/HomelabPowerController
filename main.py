@@ -85,17 +85,34 @@ class HLPC:
             log.debug(f'Current constructed ping command is: \n\t{pingCmd}')
             log.debug(f'Current constructed ssh command is: \n\t{sshCmd}')
             log.warning(f'Checking if {machineName} is alive')
+            
             ping = subprocess.run(pingCmd, shell=True, capture_output=True, text = True) #Run a ping command for the current machine
             pingRtrnCode = ping.returncode #Capture return code
             pingOutput = ping.stdout #Capture output
+            
             log.info(f'Ping output for {machineName} is: \n{pingOutput}')
             log.info(f'Ping return code is: {pingRtrnCode}')
             lcd.print(f'Checking', f'{machineName}')
             time.sleep(2)
+            
             if(pingRtrnCode == 0): #If ping was succesful
                 lcd.print(f'{machineName}', 'is Alive')
+                time.sleep(1)
                 log.warning(f'{machineName} is alive')
+                
+                lcd.print(f'Shutting Down', f'{machineName}')
                 log.warning(f'Performing shutdown on {machineName} ({ipAddr}) via user {rmtUsr} using shutdown command {cmd}')
+                
+                ssh = subprocess.run(sshCmd, shell=True, capture_output=True, text = True)
+                sshOutput = ssh.stdout #Capture output
+                sshRtrnCode = ping.returncode #Capture return code
+                
+                log.info(f'SSH output for {machineName} is: \n{sshOutput}')
+                log.info(f'SSH return code is: {sshRtrnCode}')
+            else: #If ping was not succesful
+                log.warning(f'{machineName} was not determind to be alive, assumed dead')
+                lcd.print(f'{machineName}', f'is Dead')
+                time.sleep(1.5)
             
     def remotePowerOn(self):
         """
