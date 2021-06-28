@@ -82,3 +82,7 @@ class HLPC:
             
             lcd.clear()
             lcd.print(mainMenuPages[crntMenuPage][0],mainMenuPages[crntMenuPage][1]) #Update main menu
+
+if(__name__ == "__main__"):
+    mainHLPC = HLPC()
+    mainHLPC.mainMenu()
