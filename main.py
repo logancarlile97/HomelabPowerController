@@ -80,7 +80,7 @@ class HLPC:
             rmtUsr = remoteInfo[2]
             cmd = remoteInfo[3]
             pingCmd = f'ping -c 3 {ipAddr}'
-            sshCmd = f'ssh -t -t -o BatchMode=yes {rmtUsr}@{ipAddr} \'{cmd}\'' 
+            sshCmd = f'ssh -t -t -o BatchMode=yes -o ConnectTimeout=15 {rmtUsr}@{ipAddr} \'{cmd}\'' 
 
             log.debug(f'Current constructed ping command is: \n\t{pingCmd}')
             log.debug(f'Current constructed ssh command is: \n\t{sshCmd}')
@@ -97,7 +97,7 @@ class HLPC:
             
             if(pingRtrnCode == 0): #If ping was succesful
                 lcd.print(f'{machineName}', 'is Alive')
-                time.sleep(1)
+                time.sleep(2)
                 log.warning(f'{machineName} is alive')
                 
                 lcd.print(f'Shutting Down', f'{machineName}')
@@ -109,10 +109,11 @@ class HLPC:
                 
                 log.info(f'SSH output for {machineName} is: \n{sshOutput}')
                 log.info(f'SSH return code is: {sshRtrnCode}')
+                time.sleep(2)
             else: #If ping was not succesful
                 log.warning(f'{machineName} was not determind to be alive, assumed dead')
                 lcd.print(f'{machineName}', f'is Dead')
-                time.sleep(1.5)
+                time.sleep(2)
             
     def remotePowerOn(self):
         """
