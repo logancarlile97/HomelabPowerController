@@ -105,7 +105,7 @@ class HLPC:
                 
                 ssh = subprocess.run(sshCmd, shell=True, capture_output=True, text = True)
                 sshOutput = ssh.stderr #Capture output
-                sshRtrnCode = ping.returncode #Capture return code
+                sshRtrnCode = ssh.returncode #Capture return code
                 
                 log.info(f'SSH output for {machineName} is: \n{sshOutput}')
                 log.info(f'SSH return code is: {sshRtrnCode}')
