@@ -4,6 +4,7 @@ import logging
 from LcdDriver import LcdDriver
 import time
 import subprocess
+from CSVreader import CSVreader
 
 class HLPC:
     """
@@ -65,7 +66,10 @@ class HLPC:
         """
         Method to run a remote shutdown of hosts via SSH. Uses CSV file specified in config.ini
         """
-        pass
+        shutdownCSV = CSVreader(self.config.getShutdownConfig('shutdownCSVfile'))
+        shutdownCSV.hasHeader() #Shutdown CSV is expected to have a header
+        remoteMachineInfo = shutdownCSV.parseCSV() #Parse the csv file to a list of lists
+
     def remotePowerOn(self):
         """
         Method to run a remote power on of hosts. Uses CSV file specified in config.ini.
