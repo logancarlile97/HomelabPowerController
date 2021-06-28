@@ -234,7 +234,7 @@ class Authenticator:
                         lcd.print('Locked Out for:', f'{lockoutTime} seconds')
                         time.sleep(lockoutTime)
                         crntAttempt = 1 #Reset currnet attempt
-                        lcd.print('','Enter Pin')
+                    lcd.print('','Enter Pin')
                 elif(userInput == pin): #If user inputed correct pin then return True
                     log.info(f'Authenticator validated user')
                     return True
