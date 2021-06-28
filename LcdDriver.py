@@ -50,7 +50,7 @@ class LcdDriver():
 
         log.debug(f'lcd message printed')
         self.lcd.message = adjTop + adjBottom
-        log.info(f'Current lcd message: \n\t{adjTop} \t{adjBottom}')
+        log.info(f'Current lcd message: \n{adjTop+adjBottom}')
 
     def clear(self):
         """
