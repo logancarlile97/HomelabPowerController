@@ -5,6 +5,7 @@ from LcdDriver import LcdDriver
 import time
 import subprocess
 from CSVreader import CSVreader
+import sys
 
 class HLPC:
     """
@@ -115,6 +116,7 @@ class HLPC:
                     lcd.print(f'Error Please',f'Check Logs')
                     log.error(f'Error shuting down {machineName}, ssh return code is: {sshRtrnCode}')
                     log.error(f'SSH output: \n{sshOutput}\n{sshErrOutput}')
+                    time.sleep(3)
                 time.sleep(2)
             else: #If ping was not succesful
                 log.warning(f'{machineName} was not determind to be alive, assumed dead')
@@ -171,7 +173,7 @@ class HLPC:
                     self.printIpAddr()
                 else:
                     lcd.clear()
-                    lcd.print('Unkown Input','')
+                    lcd.print('Unkown Input',' ')
                     time.sleep(1)
             
             lcd.clear()
@@ -183,6 +185,9 @@ class HLPC:
 if(__name__ == "__main__"):
     try:
         mainHLPC = HLPC()
-        mainHLPC.mainMenu()
+        if(len(sys.argv) > 0):
+            pass
+        else:
+            mainHLPC.mainMenu()
     except KeyboardInterrupt:
         print('User exited program via Keyboard Interupt')
