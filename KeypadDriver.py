@@ -227,16 +227,19 @@ class Authenticator:
                 elif(userInput != pin): #If user inputed invalid pin
                     time.sleep(2)
                     log.warning(f'User inputed invalid pin on keypad')
+                    lcd.print('',f'Attempt {crntAttempt} of 3')
+                    time.sleep(1)
                     if(crntAttempt >= maxAttempts): #If user has reached maximum attempts
                         log.warning(f'User has reached max attempts, locking out for {lockoutTime} seconds')
+                        lcd.print('Locked Out for:', f'{lockoutTime} seconds')
                         time.sleep(lockoutTime)
                         crntAttempt = 1 #Reset currnet attempt
                 elif(userInput == pin): #If user inputed correct pin then return True
                     log.info(f'Authenticator validated user')
                     return True
-                
                 crntAttempt += 1 #Increment current attempt
                 userInput = ''
+                lcd.print('',' ')
             elif (pressedKey == '*'): #If pressedKey is the clear key then clear userInput
                 userInput = ''
                 lcd.print('', ' ')
@@ -244,6 +247,6 @@ class Authenticator:
                 userInput += pressedKey
                 pressedKey = '' #Reset pressed key
 
-            lcd.print('', userInput) #Display new userInput on screen so user can see pin
+            lcd.print('Authenticator', userInput) #Display new userInput on screen so user can see pin
 
 
