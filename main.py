@@ -90,8 +90,9 @@ class HLPC:
             ping = subprocess.run(pingCmd, shell=True, capture_output=True, text = True) #Run a ping command for the current machine
             pingRtrnCode = ping.returncode #Capture return code
             pingOutput = ping.stdout #Capture output
-            
-            log.info(f'Ping output for {machineName} is: \n{pingOutput}')
+            pingErrOutput = ping.stderr #Capture errors
+
+            log.info(f'Ping output for {machineName} is: \n{pingOutput}\n{pingErrOutput}')
             log.info(f'Ping return code is: {pingRtrnCode}')
             time.sleep(2)
             
@@ -104,10 +105,11 @@ class HLPC:
                 log.warning(f'Performing shutdown on {machineName} ({ipAddr}) via user {rmtUsr} using shutdown command {cmd}')
                 
                 ssh = subprocess.run(sshCmd, shell=True, capture_output=True, text = True)
-                sshOutput = ssh.stderr #Capture output
+                sshErrOutput = ssh.stderr #Capture errors
+                sshOutput = ssh.stdout #Capture output
                 sshRtrnCode = ssh.returncode #Capture return code
                 
-                log.info(f'SSH output for {machineName} is: \n{sshOutput}')
+                log.info(f'SSH output for {machineName} is: \n{sshOutput}\n{sshErrOutput}')
                 log.info(f'SSH return code is: {sshRtrnCode}')
                 time.sleep(2)
             else: #If ping was not succesful
