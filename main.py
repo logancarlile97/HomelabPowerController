@@ -3,6 +3,7 @@ from ConfigReader import ConfigReader
 import logging
 from LcdDriver import LcdDriver
 import time
+import socket
 
 class HLPC:
     """
@@ -25,6 +26,23 @@ class HLPC:
 
         self.auth = Authenticator()
 
+    def printIpAddr(self):
+        """
+        Prints host IP address to lcd
+        """
+        log = self.log
+        lcd = self.lcd
+        keypad = self.keypad
+
+        hostname = socket.gethostname()
+        ipAddress = socket.gethostbyname(hostname)
+
+        lcd.print('Press any key', 'to exit')
+        time.sleep(2)
+        log.info(f'print IP has gathered that the host hostname is {hostname}, and the ip is {ipAddress}')
+        lcd.print(f'{hostname}', f'{ipAddress}')
+        keypad.press() #Wait for user to press a key to contine
+
     def remoteShutdown(self):
         """
         Method to run a remote shutdown of hosts via SSH. Uses CSV file specified in config.ini
@@ -44,7 +62,7 @@ class HLPC:
         log = self.log
         auth = self.auth #Will return true or false depending on if user could be verified
 
-        mainMenuPages = [['Shutdown: A', 'PowerOn: B']] #Text to show depending on current main menu page, the second index determins top [0] or bottom [1] of LCD
+        mainMenuPages = [['Shutdown: A', 'PowerOn: B'],['IP Address: C', ' ']] #Text to show depending on current main menu page, the second index determins top [0] or bottom [1] of LCD
         crntMenuPage = 0
         pressedKey = ''
         pageIncrementKey = '#' #Key on keypad to be used to change mainMenuPage
@@ -76,7 +94,8 @@ class HLPC:
                     time.sleep(2)
                     if(auth.verified()):
                         self.remotePowerOn()
-
+                elif (pressedKey == 'C'):
+                    self.printIpAddr()
                 else:
                     lcd.clear()
                     lcd.print('Unkown Input','')
