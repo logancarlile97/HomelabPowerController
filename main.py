@@ -126,5 +126,8 @@ class HLPC:
                 break
 
 if(__name__ == "__main__"):
-    mainHLPC = HLPC()
-    mainHLPC.mainMenu()
+    try:
+        mainHLPC = HLPC()
+        mainHLPC.mainMenu()
+    except KeyboardInterrupt:
+        print('User exited program via Keyboard Interupt')
