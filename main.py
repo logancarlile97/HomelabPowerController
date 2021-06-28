@@ -44,10 +44,12 @@ class HLPC:
         log = self.log
         auth = self.auth #Will return true or false depending on if user could be verified
 
-        mainMenuPages = [['Shutdown: A', 'PowerOn: B'],['Test of','Page 2']] #Text to show depending on current main menu page, the second index determins top [0] or bottom [1] of LCD
+        mainMenuPages = [['Shutdown: A', 'PowerOn: B']] #Text to show depending on current main menu page, the second index determins top [0] or bottom [1] of LCD
         crntMenuPage = 0
         pressedKey = ''
         pageIncrementKey = '#' #Key on keypad to be used to change mainMenuPage
+
+        endPrgm = False #If this is set to True the main menu loop will end and the program will exit
 
         lcd.print(mainMenuPages[crntMenuPage][0],mainMenuPages[crntMenuPage][1]) #Set initial menu page on LCD
         while(True): #Main loop
@@ -83,6 +85,8 @@ class HLPC:
             lcd.clear()
             lcd.print(mainMenuPages[crntMenuPage][0],mainMenuPages[crntMenuPage][1]) #Update main menu
 
+            if (endPrgm == True): #Used to exit program and prevent an infinate loop  
+                break
 
 if(__name__ == "__main__"):
     mainHLPC = HLPC()
