@@ -38,11 +38,27 @@ class HLPC:
         ipAddress = subprocess.run('hostname -I', shell=True, capture_output=True, text = True).stdout
         hostname = hostname.strip()
         ipAddress = ipAddress.strip()
-        
+            
         lcd.print('Press any key', 'to exit')
         time.sleep(2)
         log.info(f'print IP has gathered that the host hostname is {hostname}, and the ip is {ipAddress}')
-        lcd.print(f'{hostname}', f'{ipAddress}')
+        
+        
+        atEnd = False
+        for i in range(len(ipAddress)): #This for loop will scroll an ip that is too long to fit on the lcd
+            shortIP = ''
+            for x in range(16):
+                if (i+x >= len(ipAddress)):
+                    #newStr += originalStr[i+x-len(originalStr)]
+                    atEnd = True
+                    break
+                else:
+                    shortIP += ipAddress[i+x]
+            lcd.print(f'{hostname}', f'{shortIP}')
+            time.sleep(.1)
+            if (atEnd):
+                break
+
         keypad.press() #Wait for user to press a key to contine
 
     def remoteShutdown(self):
