@@ -43,12 +43,14 @@ class LcdDriver():
         if len(top) == 0:
             adjTop = top
         else:
-            adjTop = top[0:15].strip()
+            top = top.strip()
+            adjTop = top.ljust(16)
 
         if len(bottom) == 0:
             adjBottom = bottom
         else:
-            adjBottom = "\n" + bottom[0:15].strip()
+            bottom = bottom.strip()
+            adjBottom = "\n" + bottom.ljust(16)
 
         log.debug(f'lcd message printed')
         self.lcd.message = adjTop + adjBottom
