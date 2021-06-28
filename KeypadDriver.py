@@ -227,7 +227,7 @@ class Authenticator:
                 elif(userInput != pin): #If user inputed invalid pin
                     time.sleep(2)
                     log.warning(f'User inputed invalid pin on keypad')
-                    lcd.print('',f'Attempt {crntAttempt} of 3')
+                    lcd.print('',f'Attempt {crntAttempt} of {maxAttempts}')
                     time.sleep(1)
                     if(crntAttempt >= maxAttempts): #If user has reached maximum attempts
                         log.warning(f'User has reached max attempts, locking out for {lockoutTime} seconds')
