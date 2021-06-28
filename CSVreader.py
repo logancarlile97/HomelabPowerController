@@ -62,11 +62,11 @@ class CSVreader:
             file.close()#Close the opened csv file
 
             log.debug(f'Removing whitspace from parsedCSV')
+            log.info(f'Parsed CSV file contains entries: \n')
             for row in parsedCSV: #Loop through each item in parsedCSV and remove whitespace
                 for x in range(len(row)):
                     row[x] = row[x].lstrip()
                     row[x] = row[x].rstrip()
-            
-            log.info(f'Parsed CSV file contains entries: \n\t{parsedCSV}')
+                log.info(f'\t{row}')
             return parsedCSV 
             
