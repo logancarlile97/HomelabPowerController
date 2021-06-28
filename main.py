@@ -34,10 +34,10 @@ class HLPC:
         lcd = self.lcd
         keypad = self.keypad
 
-        hostname = subprocess.run('hostname', shell=True, capture_output=True, text = True).stdout
-        ipAddress = subprocess.run('hostname -I', shell=True, capture_output=True, text = True).stdout
-        hostname = hostname.strip()
-        ipAddress = ipAddress.strip()
+        hostname = subprocess.run('hostname', shell=True, capture_output=True, text = True).stdout #Command in linux to return hostname
+        ipAddress = subprocess.run('hostname -I', shell=True, capture_output=True, text = True).stdout #Command in linux to return currently set ipv4 addresses
+        hostname = hostname.strip() #Remove all escape sequences
+        ipAddress = ipAddress.strip()#Remove all escape sequences
             
         lcd.print('Press any key', 'to exit')
         time.sleep(2)
@@ -49,7 +49,6 @@ class HLPC:
             shortIP = ''
             for x in range(16):
                 if (i+x >= len(ipAddress)):
-                    #newStr += originalStr[i+x-len(originalStr)]
                     atEnd = True
                     break
                 else:
