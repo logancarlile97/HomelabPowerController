@@ -236,7 +236,7 @@ class Authenticator:
                         crntAttempt = 1 #Reset currnet attempt
                     lcd.print('','Enter Pin')
                 elif(userInput == pin): #If user inputed correct pin then return True
-                    log.info(f'Authenticator validated user')
+                    log.warning(f'Authenticator validated user')
                     return True
                 crntAttempt += 1 #Increment current attempt
                 userInput = ''
