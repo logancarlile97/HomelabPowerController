@@ -143,11 +143,11 @@ class KeypadDriver():
                         
                         if GPIO.input(ROW[i]) == 0:
                             pressedKey = KEYS[i][j]
-                            return pressedKey
-
-                        while GPIO.input(ROW[i]) == 0: # While a key is being held down this will loop
+                            while GPIO.input(ROW[i]) == 0: # While a key is being held down this will loop
                                 time.sleep(0.2) # Sleep to prevent key bouncing
                                 pass
+                            return pressedKey
+
                     # Set the column pin to
                     GPIO.output(COL[j], 1)
 
@@ -239,6 +239,7 @@ class Authenticator:
                 userInput = ''
             elif (pressedKey == '*'): #If pressedKey is the clear key then clear userInput
                 userInput = ''
+                lcd.print('', ' ')
             else: #Otherwise add pressed key to userInput
                 userInput += pressedKey
                 pressedKey = '' #Reset pressed key
