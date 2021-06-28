@@ -80,7 +80,7 @@ class HLPC:
             rmtUsr = remoteInfo[2]
             cmd = remoteInfo[3]
             pingCmd = f'ping -c 3 {ipAddr}'
-            sshCmd = f'ssh -q -t -t -o BatchMode=yes -o ConnectTimeout=15 {rmtUsr}@{ipAddr} \'{cmd}\'' 
+            sshCmd = f'ssh -t -t -o BatchMode=yes -o ConnectTimeout=15 {rmtUsr}@{ipAddr} \'{cmd}\'' 
 
             log.debug(f'Current constructed ping command is: \n\t{pingCmd}')
             log.debug(f'Current constructed ssh command is: \n\t{sshCmd}')
@@ -104,7 +104,7 @@ class HLPC:
                 log.warning(f'Performing shutdown on {machineName} ({ipAddr}) via user {rmtUsr} using shutdown command {cmd}')
                 
                 ssh = subprocess.run(sshCmd, shell=True, capture_output=True, text = True)
-                sshOutput = ssh.stdout #Capture output
+                sshOutput = ssh.stderr #Capture output
                 sshRtrnCode = ping.returncode #Capture return code
                 
                 log.info(f'SSH output for {machineName} is: \n{sshOutput}')
