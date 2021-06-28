@@ -79,8 +79,23 @@ class HLPC:
             ipAddr = remoteInfo[1]
             rmtUsr = remoteInfo[2]
             cmd = remoteInfo[3]
+            pingCmd = f'ping -c 3 {ipAddr}'
+            sshCmd = f'ssh -t -t -o BatchMode=yes {rmtUsr}@{ipAddr} \'{cmd}\'' 
 
-            log.warning(f'Performing shutdown on {machineName} ({ipAddr}) via user {rmtUsr} using shutdown command {cmd}')
+            log.debug(f'Current constructed ping command is: \n\t{pingCmd}')
+            log.debug(f'Current constructed ssh command is: \n\t{sshCmd}')
+            log.warning(f'Checking if {machineName} is alive')
+            ping = subprocess.run(pingCmd, shell=True, capture_output=True, text = True) #Run a ping command for the current machine
+            pingRtrnCode = ping.returncode #Capture return code
+            pingOutput = ping.stdout #Capture output
+            log.info(f'Ping output for {machineName} is: \n{pingOutput}')
+            log.info(f'Ping return code is: {pingRtrnCode}')
+            lcd.print(f'Checking', f'{machineName}')
+            time.sleep(2)
+            if(pingRtrnCode == 0): #If ping was succesful
+                lcd.print(f'{machineName}', 'is Alive')
+                log.warning(f'{machineName} is alive')
+                log.warning(f'Performing shutdown on {machineName} ({ipAddr}) via user {rmtUsr} using shutdown command {cmd}')
             
     def remotePowerOn(self):
         """
