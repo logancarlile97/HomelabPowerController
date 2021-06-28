@@ -94,7 +94,7 @@ class KeypadDriver():
 
                             
                             while GPIO.input(ROW[i]) == 0: # While a key is being held down this will loop
-                                time.sleep(0.2) # Sleep to prevent key bouncing
+                                time.sleep(0.002) # Sleep to prevent key bouncing
                                 pass
 
                     # Set the column pin to
@@ -131,7 +131,7 @@ class KeypadDriver():
 
             
             while True: # Loop until a entry is entered by the user
-
+                time.sleep(0.001) #Delay to prevent over utilization of cpu resources
                 
                 for j in range(len(COL)): # Loop through each column pin and set output to low
                     GPIO.output(COL[j], 0)
@@ -143,6 +143,9 @@ class KeypadDriver():
                         
                         if GPIO.input(ROW[i]) == 0:
                             pressedKey = KEYS[i][j]
+                            while GPIO.input(ROW[i]) == 0: # While a key is being held down this will loop
+                                time.sleep(0.002) # Sleep to prevent key bouncing
+                                pass
                             return pressedKey
 
                     # Set the column pin to
@@ -224,22 +227,26 @@ class Authenticator:
                 elif(userInput != pin): #If user inputed invalid pin
                     time.sleep(2)
                     log.warning(f'User inputed invalid pin on keypad')
+                    lcd.print('',f'Attempt {crntAttempt} of {maxAttempts}')
+                    time.sleep(1)
                     if(crntAttempt >= maxAttempts): #If user has reached maximum attempts
                         log.warning(f'User has reached max attempts, locking out for {lockoutTime} seconds')
+                        lcd.print('Locked Out for:', f'{lockoutTime} seconds')
                         time.sleep(lockoutTime)
                         crntAttempt = 1 #Reset currnet attempt
+                    lcd.print('','Enter Pin')
                 elif(userInput == pin): #If user inputed correct pin then return True
-                    log.info(f'Authenticator validated user')
+                    log.warning(f'Authenticator validated user')
                     return True
-                
                 crntAttempt += 1 #Increment current attempt
                 userInput = ''
             elif (pressedKey == '*'): #If pressedKey is the clear key then clear userInput
                 userInput = ''
+                lcd.print('', ' ')
             else: #Otherwise add pressed key to userInput
                 userInput += pressedKey
                 pressedKey = '' #Reset pressed key
 
-            lcd.print('', userInput) #Display new userInput on screen so user can see pin
+            lcd.print('Authenticator', userInput) #Display new userInput on screen so user can see pin
 
 

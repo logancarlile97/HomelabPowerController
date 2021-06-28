@@ -1,14 +1,16 @@
 import adafruit_character_lcd.character_lcd as characterLCD
 import board
 import digitalio
-import time
 import logging
+from ConfigReader import ConfigReader
 
 class LcdDriver():
     """
     A class to handle the lcd
     """
     def __init__(self):
+        self.config = ConfigReader('config.ini')
+
         # Assign each lcd pin to GPIO
         lcd_rs = digitalio.DigitalInOut(board.D17)  # GPIO 17 pin 11
         lcd_en = digitalio.DigitalInOut(board.D27)  # GPIO 27 pin 13
@@ -23,8 +25,8 @@ class LcdDriver():
                                                    lcd_rows)
         #Create and configure logger
         LOG_Format = "%(levelname)s %(asctime)s - %(message)s"
-        logging.basicConfig(filename = 'test.log',
-                            level = logging.INFO,
+        logging.basicConfig(filename = self.config.getLogConfig('logFile'),
+                            level = self.config.getLogConfig('logLevel'),
                             format = LOG_Format)
 
         self.logger = logging.getLogger()
@@ -50,7 +52,6 @@ class LcdDriver():
 
         log.debug(f'lcd message printed')
         self.lcd.message = adjTop + adjBottom
-        log.info(f'Current lcd message {adjTop} \t{adjBottom}')
 
     def clear(self):
         """
