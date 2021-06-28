@@ -131,7 +131,7 @@ class KeypadDriver():
 
             
             while True: # Loop until a entry is entered by the user
-                time.sleep(0.0005) #Delay to prevent over utilization of cpu resources
+                time.sleep(0.001) #Delay to prevent over utilization of cpu resources
                 
                 for j in range(len(COL)): # Loop through each column pin and set output to low
                     GPIO.output(COL[j], 0)
