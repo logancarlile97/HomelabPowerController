@@ -66,10 +66,22 @@ class HLPC:
         """
         Method to run a remote shutdown of hosts via SSH. Uses CSV file specified in config.ini
         """
+        log = self.log
+        lcd = self.lcd
+
+        log.warning(f'User is running HLPC shutdown')
         shutdownCSV = CSVreader(self.config.getShutdownConfig('shutdownCSVfile'))
         shutdownCSV.hasHeader() #Shutdown CSV is expected to have a header
-        remoteMachineInfo = shutdownCSV.parseCSV() #Parse the csv file to a list of lists
+        remoteMachinesInfo = shutdownCSV.parseCSV() #Parse the csv file to a list of lists
 
+        for remoteInfo in remoteMachinesInfo: #Loop through each list in the the remoteMachinesInfo list
+            machineName = remoteInfo[0]
+            ipAddr = remoteInfo[1]
+            rmtUsr = remoteInfo[2]
+            cmd = remoteInfo[3]
+
+            log.warning(f'Performing shutdown on {machineName} ({ipAddr}) via user {rmtUsr} using shutdown command {cmd}')
+            
     def remotePowerOn(self):
         """
         Method to run a remote power on of hosts. Uses CSV file specified in config.ini.
