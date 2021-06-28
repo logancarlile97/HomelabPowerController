@@ -3,7 +3,7 @@ from ConfigReader import ConfigReader
 import logging
 from LcdDriver import LcdDriver
 import time
-import socket
+import subprocess
 
 class HLPC:
     """
@@ -34,8 +34,8 @@ class HLPC:
         lcd = self.lcd
         keypad = self.keypad
 
-        hostname = socket.gethostname()
-        ipAddress = socket.gethostbyname(hostname)
+        hostname = subprocess.run('hostname --fqdn', shell=True, capture_output=True, text = True).stdout
+        ipAddress = subprocess.run('hostname -I', shell=True, capture_output=True, text = True).stdout
 
         lcd.print('Press any key', 'to exit')
         time.sleep(2)
