@@ -23,7 +23,7 @@ class HLPC:
         self.lcd = LcdDriver()
         self.keypad = KeypadDriver()
 
-        self.userVerified = Authenticator().verified()
+        self.auth = Authenticator()
 
     def remoteShutdown(self):
         """
@@ -42,7 +42,7 @@ class HLPC:
         keypad = self.keypad
         lcd = self.lcd
         log = self.log
-        userVerified = self.userVerified #Will return true or false depending on if user could be verified
+        auth = self.auth #Will return true or false depending on if user could be verified
 
         mainMenuPages = [['Shutdown: A', 'PowerOn: B']] #Text to show depending on current main menu page, the second index determins top [0] or bottom [1] of LCD
         crntMenuPage = 0
@@ -66,13 +66,13 @@ class HLPC:
                     lcd.print('HLPC Shutdown', 'Loading...')
                     log.info(f'User has selected HLPC Shutdown')
                     time.sleep(2)
-                    if(userVerified): #If user can be verified then proceed with shutdown
+                    if(auth.verified()): #If user can be verified then proceed with shutdown
                         self.remoteShutdown()
                 elif (pressedKey == 'B'):
                     lcd.print('HLPC Power On', 'Loading...')
                     log.info(f'User has selected HLPC Power On')
                     time.sleep(2)
-                    if(userVerified):
+                    if(auth.verified()):
                         self.remotePowerOn()
 
                 else:
@@ -82,6 +82,7 @@ class HLPC:
             
             lcd.clear()
             lcd.print(mainMenuPages[crntMenuPage][0],mainMenuPages[crntMenuPage][1]) #Update main menu
+
 
 if(__name__ == "__main__"):
     mainHLPC = HLPC()
