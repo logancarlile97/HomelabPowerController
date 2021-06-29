@@ -106,6 +106,23 @@ class HLPC:
             time.sleep(2)
             return False
 
+    def pingTest(self):
+        """
+        Run a test ping of machines without performing any actions
+        """
+        config = self.config
+        log = self.log
+
+        log.warning(f'User requested ping test of HPLC')
+        ipListStr = config.getPingTestConfig('IPsToPing')
+        ipList = ipListStr.split(',')
+        for x in range(len(ipList)): #Remove whitespace from IP addresses
+            ipList[x] = ipList[x].lstrip()
+            ipList[x] = ipList[x].rstrip()
+            ipList[x] = ipList[x].strip()
+        for ip in ipList:
+            self.pingCheck(ip, ip) #Ping Check each listed ip
+        
     def remoteShutdown(self):
         """
         Method to run a remote shutdown of hosts via SSH. Uses CSV file specified in config.ini
@@ -202,7 +219,11 @@ class HLPC:
         log = self.log
         auth = self.auth #Will return true or false depending on if user could be verified
 
-        mainMenuPages = [['HLPC', 'Shutdown: A'],['HLPC','Power On: B'],['Display HLPC', 'IP Address: C'],['Exit HLPC','Program: D']] #Text to show depending on current main menu page, the second index determins top [0] or bottom [1] of LCD
+        mainMenuPages = [['HLPC', 'Shutdown: A'],
+                        ['HLPC','Power On: B'],
+                        ['Display HLPC', 'IP Address: C'],
+                        ['HLPC','Ping Check: 1'],
+                        ['Exit HLPC','Program: D']] #Text to show depending on current main menu page, the second index determins top [0] or bottom [1] of LCD
         crntMenuPage = 0
         pressedKey = ''
         pageIncrementKey = '#' #Key on keypad to be used to change mainMenuPage
@@ -241,6 +262,8 @@ class HLPC:
                         if(self.exitPrgm()):
                             endPrgm = True
                             log.warning('User has ended program via keypad')
+                elif (pressedKey == '1'):
+                    self.pingTest()
                 else:
                     lcd.clear()
                     lcd.print('Unkown Input',' ')

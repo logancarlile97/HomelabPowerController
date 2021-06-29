@@ -37,3 +37,7 @@ class ConfigReader:
         value = self.config.get('Log', valueKey) #Get value from config file
         value = ast.literal_eval(value) #Parse value into correct format
         return value #Return value
+    def getPingTestConfig(self, valueKey):
+        value = self.config.get('Ping Test', valueKey) #Get value from config file
+        value = ast.literal_eval(value) #Parse value into correct format
+        return value #Return value
