@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 from KeypadDriver import KeypadDriver, Authenticator
 from ConfigReader import ConfigReader
 import logging
@@ -186,9 +185,21 @@ class HLPC:
 if(__name__ == "__main__"):
     try:
         mainHLPC = HLPC()
-        if(len(sys.argv) > 1):
-            print(str(sys.argv))
-            pass
+        if(len(sys.argv) > 1): #Check if user specified arguments
+            arg = str(sys.argv[1]) #Get the argument that user specified
+            validArgs = ['shutdown','powerOn','help']
+            if(arg == validArgs[0]):
+                mainHLPC.remoteShutdown()
+            elif(arg == validArgs[1]):
+                mainHLPC.remotePowerOn()
+            elif(arg == validArgs[2]):
+                helpStr = ''
+                for validArg in validArgs:
+                    helpStr += f'{validArg} '
+                print(helpStr)
+            else:
+                print('Unknown Argument')
+                print('Exiting program')
         else:
             mainHLPC.mainMenu()
     except KeyboardInterrupt:
