@@ -293,7 +293,7 @@ if(__name__ == "__main__"):
             elif(arg == validArgs[2][0]):
                 print(f'Valid Arguments')
                 for validArg in validArgs:    
-                    print(f'\t{validArg[0]}: {validArg[1]}') 
+                    print(f'\t{validArg[0]}: \n\t\t{validArg[1]}') 
             elif(arg == validArgs[3][0]):
                 mainHLPC.pingTest()
             else:
