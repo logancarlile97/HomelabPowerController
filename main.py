@@ -6,6 +6,7 @@ import time
 import subprocess
 from CSVreader import CSVreader
 import sys
+import os
 
 class HLPC:
     """
@@ -233,7 +234,7 @@ class HLPC:
         endPrgm = False #If this is set to True the main menu loop will end and the program will exit
 
 
-        #Unecessary loading screen because I thought it would be cool
+        #The following is an unecessary loading screen because I thought it would be cool
         lcd.print('Homelab Power','Controller')
         time.sleep(3)
         lcd.print('Developed','By:')
@@ -304,6 +305,7 @@ class HLPC:
 
 if(__name__ == "__main__"):
     try:
+        os.chdir(os.path.dirname(sys.argv[0])) #Set the current working directory
         mainHLPC = HLPC()
         if(len(sys.argv) > 1): #Check if user specified arguments
             arg = str(sys.argv[1]) #Get the argument that user specified
