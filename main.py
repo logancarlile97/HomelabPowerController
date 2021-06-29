@@ -172,7 +172,8 @@ class HLPC:
 
                 log.info(f'Power on command output for {machineName} is: \n{pwrCmdOutput}\n{pwrCmdErrOutput}')
                 log.info(f'Power on command return code is: {pwrCmdRtrnCode}')
-
+                time.sleep(2)
+                
                 if(pwrCmdRtrnCode != 0): #If ssh command was not succesful
                     lcd.print(f'Error Please',f'Check Logs')
                     log.error(f'Error powering on {machineName}, command return code is: {pwrCmdRtrnCode}')
