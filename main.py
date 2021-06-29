@@ -179,7 +179,7 @@ class HLPC:
                     log.error(f'Power on command output: \n{pwrCmdOutput}\n{pwrCmdErrOutput}')
                     time.sleep(3)
                 time.sleep(2)
-
+        lcd.clear()
     def mainMenu(self):
         """
         Main Menu for HLPC Program allows user to select operation to run via LCD screen and keypad
