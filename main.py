@@ -85,7 +85,7 @@ class HLPC:
 
             log.debug(f'Current constructed ping command is: \n\t{pingCmd}')
             log.debug(f'Current constructed ssh command is: \n\t{sshCmd}')
-            log.warning(f'Checking if {machineName} is alive')
+            log.info(f'Checking if {machineName} is alive')
             lcd.print(f'Checking', f'{machineName}')
             
             ping = subprocess.run(pingCmd, shell=True, capture_output=True, text = True) #Run a ping command for the current machine
@@ -143,7 +143,7 @@ class HLPC:
             pingCmd = f'ping -c 3 {ipAddr}'
 
             log.debug(f'Current constructed ping command is: \n\t{pingCmd}')
-            log.warning(f'Checking if {machineName} is alive')
+            log.info(f'Checking if {machineName} is alive')
             lcd.print(f'Checking', f'{machineName}')
 
             ping = subprocess.run(pingCmd, shell=True, capture_output=True, text = True) #Run a ping command for the current machine
@@ -173,7 +173,7 @@ class HLPC:
                 log.info(f'Power on command output for {machineName} is: \n{pwrCmdOutput}\n{pwrCmdErrOutput}')
                 log.info(f'Power on command return code is: {pwrCmdRtrnCode}')
                 time.sleep(2)
-                
+
                 if(pwrCmdRtrnCode != 0): #If ssh command was not succesful
                     lcd.print(f'Error Please',f'Check Logs')
                     log.error(f'Error powering on {machineName}, command return code is: {pwrCmdRtrnCode}')
