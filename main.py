@@ -115,7 +115,7 @@ class HLPC:
         config = self.config
         log = self.log
 
-        log.warning(f'User requested ping test of HPLC')
+        log.warning(f'User requested ping test of HLPC')
         ipListStr = config.getPingTestConfig('IPsToPing')
         ipList = ipListStr.split(',')
         for x in range(len(ipList)): #Remove whitespace from IP addresses
