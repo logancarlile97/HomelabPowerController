@@ -66,6 +66,3 @@ class LcdDriver():
         
         self.lcd.clear()
         log.info(f'LCD has been cleared')
-
-
-lcd = LcdDriver()
