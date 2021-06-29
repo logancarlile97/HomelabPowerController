@@ -249,7 +249,7 @@ class Authenticator:
 
             obfuscatedPin = ''
             for x in range(len(userInput)):
-                if(x == len(userInput-1)):
+                if(x == len(userInput)-1):
                     obfuscatedPin += userInput[x]
                 else:
                     obfuscatedPin += '*'
