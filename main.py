@@ -232,6 +232,23 @@ class HLPC:
 
         endPrgm = False #If this is set to True the main menu loop will end and the program will exit
 
+
+        #Unecessary loading screen because I thought it would be cool
+        lcd.print('Homelab','Power Controller')
+        time.sleep(3)
+        lcd.print('Developed','By:')
+        time.sleep(2)
+        lcd.print('Wesely','Cooke')
+        time.sleep(2)
+        lcd.print('and',' ')
+        time.sleep(1)
+        lcd.print('Logan','Carlile')
+        time.sleep(2)
+        lcd.print('Loading...',' ')
+        time.sleep(4)
+        lcd.print('','Done')
+        time.sleep(1)
+        
         lcd.print(mainMenuPages[crntMenuPage][0],mainMenuPages[crntMenuPage][1]) #Set initial menu page on LCD
         while(True): #Main loop
             pressedKey = keypad.press() #Get a keypress from user
