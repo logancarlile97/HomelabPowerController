@@ -187,7 +187,7 @@ if(__name__ == "__main__"):
     try:
         mainHLPC = HLPC()
         if(len(sys.argv) > 1):
-            str(sys.argv)
+            print(str(sys.argv))
             pass
         else:
             mainHLPC.mainMenu()
