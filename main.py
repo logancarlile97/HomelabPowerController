@@ -28,6 +28,17 @@ class HLPC:
 
         self.auth = Authenticator()
 
+    def exitPrgm(self):
+        """
+        Makes user confirm they want to exit program
+        """
+        self.lcd.print('Confirm: 2468#', 'Go Back: #')
+        userConfirmation = self.keypad.input()
+        if(userConfirmation == '2468'):
+            return True
+        else: 
+            return False
+        
     def printIpAddr(self):
         """
         Prints host IP address to lcd
@@ -190,7 +201,7 @@ class HLPC:
         log = self.log
         auth = self.auth #Will return true or false depending on if user could be verified
 
-        mainMenuPages = [['HLPC', 'Shutdown: A'],['HLPC','Power On: B'],['Display HLPC', 'IP Address: C']] #Text to show depending on current main menu page, the second index determins top [0] or bottom [1] of LCD
+        mainMenuPages = [['HLPC', 'Shutdown: A'],['HLPC','Power On: B'],['Display HLPC', 'IP Address: C'],['Exit HLPC','Program: D']] #Text to show depending on current main menu page, the second index determins top [0] or bottom [1] of LCD
         crntMenuPage = 0
         pressedKey = ''
         pageIncrementKey = '#' #Key on keypad to be used to change mainMenuPage
@@ -224,6 +235,11 @@ class HLPC:
                         self.remotePowerOn()
                 elif (pressedKey == 'C'):
                     self.printIpAddr()
+                elif (pressedKey == 'D'):
+                    if(auth.verified()):
+                        if(self.exitPrgm()):
+                            endPrgm = True
+                            log.warning('User has ended program via keypad')
                 else:
                     lcd.clear()
                     lcd.print('Unkown Input',' ')
@@ -233,6 +249,8 @@ class HLPC:
             lcd.print(mainMenuPages[crntMenuPage][0],mainMenuPages[crntMenuPage][1]) #Update main menu
 
             if (endPrgm == True): #Used to exit program and prevent an infinate loop  
+                log.debug('endPrgm has been set to True, program will end')
+                lcd.print('Program Ended','Via Keypad')#This message will remain on keypad until program is restarted or power is pulled from device
                 break
 
 if(__name__ == "__main__"):
