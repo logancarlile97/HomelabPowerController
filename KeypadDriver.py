@@ -215,7 +215,7 @@ class Authenticator:
         while(True): #Loop until user enters correct pin or enter exitAuthCode
             pressedKey = keypad.press() #Get current pressed key
             log.debug(f'Newly pressed key: {pressedKey}')
-
+        
             if (pressedKey == '#'): #If pressedKey is the enter key then begin auth processing
                 log.info(f'User inputed pin')
                 lcd.print('', 'Analysing...')
@@ -247,6 +247,13 @@ class Authenticator:
                 userInput += pressedKey
                 pressedKey = '' #Reset pressed key
 
-            lcd.print('Authenticator', userInput) #Display new userInput on screen so user can see pin
+            obfuscatedPin = ''
+            for x in range(len(userInput)):
+                if(x == len(userInput-1)):
+                    obfuscatedPin += userInput[x]
+                else:
+                    obfuscatedPin += '*'
+            
+            lcd.print('Authenticator', obfuscatedPin) #Display new userInput on screen so user can see pin
 
 
