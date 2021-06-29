@@ -99,11 +99,13 @@ class HLPC:
             log.warning(f'{machineName} is alive')
             lcd.print(f'{machineName}', 'is Alive')
             time.sleep(2)
+            lcd.clear()
             return True
         else: #otherwise state machine could not be pinged
             log.warning(f'{machineName} was not determind to be alive, assumed dead')
             lcd.print(f'{machineName}', f'is Dead')
             time.sleep(2)
+            lcd.clear()
             return False
 
     def pingTest(self):
