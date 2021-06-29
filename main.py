@@ -247,7 +247,7 @@ class HLPC:
 
             if (endPrgm == True): #Used to exit program and prevent an infinate loop  
                 log.debug('endPrgm has been set to True, program will end')
-                lcd.clear()
+                lcd.print('Program Ended','Via Keypad')
                 break
 
 if(__name__ == "__main__"):
