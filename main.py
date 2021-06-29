@@ -199,6 +199,7 @@ if(__name__ == "__main__"):
                 print(helpStr)
             else:
                 print('Unknown Argument')
+                print(f'Valid Arguments: {validArgs}')
                 print('Exiting program')
         else:
             mainHLPC.mainMenu()
