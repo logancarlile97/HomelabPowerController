@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 from KeypadDriver import KeypadDriver, Authenticator
 from ConfigReader import ConfigReader
 import logging
