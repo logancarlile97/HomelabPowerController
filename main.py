@@ -233,8 +233,10 @@ class HLPC:
                 elif (pressedKey == 'C'):
                     self.printIpAddr()
                 elif (pressedKey == 'D'):
-                    if(self.exitPrgm()):
-                        endPrgm == True
+                    if(auth.verified()):
+                        if(self.exitPrgm()):
+                            endPrgm = True
+                            log.warning('User has ended program via keypad')
                 else:
                     lcd.clear()
                     lcd.print('Unkown Input',' ')
@@ -244,6 +246,7 @@ class HLPC:
             lcd.print(mainMenuPages[crntMenuPage][0],mainMenuPages[crntMenuPage][1]) #Update main menu
 
             if (endPrgm == True): #Used to exit program and prevent an infinate loop  
+                log.debug('endPrgm has been set to True, program will end')
                 break
 
 if(__name__ == "__main__"):
