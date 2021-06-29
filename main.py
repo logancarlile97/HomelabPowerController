@@ -163,7 +163,7 @@ class HLPC:
                 log.warning(f'{machineName} was not determind to be alive, assumed dead')
                 lcd.print(f'{machineName}', f'is Dead')
                 time.sleep(2)
-                lcd.print(f'Attempting power on of {machineName}')
+                lcd.print(f'Attempting', 'Power On')
 
                 pwrCmd = subprocess.run(cmd, shell=True, capture_output=True, text = True) #Run power on command for current machine
                 pwrCmdRtrnCode = pwrCmd.returncode #Capture return code
