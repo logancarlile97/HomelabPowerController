@@ -238,7 +238,7 @@ class HLPC:
         time.sleep(3)
         lcd.print('Developed','By:')
         time.sleep(2)
-        lcd.print('Wesely','Cooke')
+        lcd.print('Wesley','Cooke')
         time.sleep(2)
         lcd.print('and',' ')
         time.sleep(1)
