@@ -28,6 +28,14 @@ class HLPC:
 
         self.auth = Authenticator()
 
+    def exitPrgm(self):
+        self.lcd.print('Confirm: 2468#', 'Go Back: #')
+        userConfirmation = self.keypad.input()
+        if(userConfirmation == '2468'):
+            return True
+        else: 
+            return False
+        
     def printIpAddr(self):
         """
         Prints host IP address to lcd
@@ -190,7 +198,7 @@ class HLPC:
         log = self.log
         auth = self.auth #Will return true or false depending on if user could be verified
 
-        mainMenuPages = [['HLPC', 'Shutdown: A'],['HLPC','Power On: B'],['Display HLPC', 'IP Address: C']] #Text to show depending on current main menu page, the second index determins top [0] or bottom [1] of LCD
+        mainMenuPages = [['HLPC', 'Shutdown: A'],['HLPC','Power On: B'],['Display HLPC', 'IP Address: C'],['Exit HLPC','Program: D']] #Text to show depending on current main menu page, the second index determins top [0] or bottom [1] of LCD
         crntMenuPage = 0
         pressedKey = ''
         pageIncrementKey = '#' #Key on keypad to be used to change mainMenuPage
@@ -224,6 +232,9 @@ class HLPC:
                         self.remotePowerOn()
                 elif (pressedKey == 'C'):
                     self.printIpAddr()
+                elif (pressedKey == 'D'):
+                    if(self.exitPrgm()):
+                        endPrgm == True
                 else:
                     lcd.clear()
                     lcd.print('Unkown Input',' ')
