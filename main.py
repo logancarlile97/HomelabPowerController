@@ -122,7 +122,8 @@ class HLPC:
                 log.warning(f'{machineName} was not determind to be alive, assumed dead')
                 lcd.print(f'{machineName}', f'is Dead')
                 time.sleep(2)
-            
+        lcd.clear()
+
     def remotePowerOn(self):
         """
         Method to run a remote power on of hosts. Uses CSV file specified in config.ini.
