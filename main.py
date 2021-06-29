@@ -234,7 +234,7 @@ class HLPC:
 
 
         #Unecessary loading screen because I thought it would be cool
-        lcd.print('Homelab','Power Controller')
+        lcd.print('Homelab Power','Controller')
         time.sleep(3)
         lcd.print('Developed','By:')
         time.sleep(2)
