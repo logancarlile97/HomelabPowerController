@@ -85,7 +85,7 @@ class HLPC:
 
             log.debug(f'Current constructed ping command is: \n\t{pingCmd}')
             log.debug(f'Current constructed ssh command is: \n\t{sshCmd}')
-            log.warning(f'Checking if {machineName} is alive')
+            log.info(f'Checking if {machineName} is alive')
             lcd.print(f'Checking', f'{machineName}')
             
             ping = subprocess.run(pingCmd, shell=True, capture_output=True, text = True) #Run a ping command for the current machine
@@ -128,7 +128,59 @@ class HLPC:
         """
         Method to run a remote power on of hosts. Uses CSV file specified in config.ini.
         """
-        pass
+        log = self.log
+        lcd = self.lcd
+
+        log.warning(f'User is running HLPC powerOn')
+        powerOnCSV = CSVreader(self.config.getPowerOnConfig('powerOnCSVfile'))
+        powerOnCSV.hasHeader() #Shutdown CSV is expected to have a header
+        remoteMachinesInfo = powerOnCSV.parseCSV() #Parse the csv file to a list of lists
+
+        for remoteInfo in remoteMachinesInfo: #Loop through each list in the the remoteMachinesInfo list
+            machineName = remoteInfo[0]
+            ipAddr = remoteInfo[1]
+            cmd = remoteInfo[2]
+            pingCmd = f'ping -c 3 {ipAddr}'
+
+            log.debug(f'Current constructed ping command is: \n\t{pingCmd}')
+            log.info(f'Checking if {machineName} is alive')
+            lcd.print(f'Checking', f'{machineName}')
+
+            ping = subprocess.run(pingCmd, shell=True, capture_output=True, text = True) #Run a ping command for the current machine
+            pingRtrnCode = ping.returncode #Capture return code
+            pingOutput = ping.stdout #Capture output
+            pingErrOutput = ping.stderr #Capture errors            
+
+            log.info(f'Ping output for {machineName} is: \n{pingOutput}\n{pingErrOutput}')
+            log.info(f'Ping return code is: {pingRtrnCode}')
+            time.sleep(2)
+
+            if(pingRtrnCode == 0): #If ping was succesful
+                lcd.print(f'{machineName}', 'is Alive')
+                time.sleep(2)
+                log.warning(f'{machineName} is alive')
+            else: #If ping was not succesful
+                log.warning(f'{machineName} was not determind to be alive, assumed dead')
+                lcd.print(f'{machineName}', f'is Dead')
+                time.sleep(2)
+                lcd.print(f'Attempting', 'Power On')
+
+                pwrCmd = subprocess.run(cmd, shell=True, capture_output=True, text = True) #Run power on command for current machine
+                pwrCmdRtrnCode = pwrCmd.returncode #Capture return code
+                pwrCmdOutput = pwrCmd.stdout #Capture output
+                pwrCmdErrOutput = pwrCmd.stderr #Capture errors
+
+                log.info(f'Power on command output for {machineName} is: \n{pwrCmdOutput}\n{pwrCmdErrOutput}')
+                log.info(f'Power on command return code is: {pwrCmdRtrnCode}')
+                time.sleep(2)
+
+                if(pwrCmdRtrnCode != 0): #If ssh command was not succesful
+                    lcd.print(f'Error Please',f'Check Logs')
+                    log.error(f'Error powering on {machineName}, command return code is: {pwrCmdRtrnCode}')
+                    log.error(f'Power on command output: \n{pwrCmdOutput}\n{pwrCmdErrOutput}')
+                    time.sleep(3)
+                time.sleep(2)
+        lcd.clear()
     def mainMenu(self):
         """
         Main Menu for HLPC Program allows user to select operation to run via LCD screen and keypad
