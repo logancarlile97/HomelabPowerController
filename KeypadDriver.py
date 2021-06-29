@@ -7,7 +7,7 @@ import logging
 from LcdDriver import LcdDriver
 import time
 
-class KeypadDriver():
+class KeypadDriver:
     """
     The driver for a keypad plugged into the raspberry pi gpio pins
     """
@@ -247,13 +247,14 @@ class Authenticator:
                 userInput += pressedKey
                 pressedKey = '' #Reset pressed key
 
-            obfuscatedPin = ''
-            for x in range(len(userInput)):
-                if(x == len(userInput)-1):
-                    obfuscatedPin += userInput[x]
-                else:
-                    obfuscatedPin += '*'
-            
-            lcd.print('Authenticator', obfuscatedPin) #Display new userInput on screen so user can see pin
-
-
+            if(config.getAuthConfig('obfuscatePin') == True): #If user says they want to obfuscate their pin
+                obfuscatedPin = ''
+                for x in range(len(userInput)):
+                    if(x == len(userInput)-1):
+                        obfuscatedPin += userInput[x]
+                    else:
+                        obfuscatedPin += '*'
+                
+                lcd.print('Authenticator', obfuscatedPin) #Display obfuscated pin
+            else:
+                lcd.print('Authenticator', userInput)
