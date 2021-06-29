@@ -282,19 +282,25 @@ if(__name__ == "__main__"):
         mainHLPC = HLPC()
         if(len(sys.argv) > 1): #Check if user specified arguments
             arg = str(sys.argv[1]) #Get the argument that user specified
-            validArgs = ['shutdown','powerOn','help']
-            if(arg == validArgs[0]):
+            validArgs = [['shutdown','Attempt to run a shutdown of remote machines'],
+                        ['powerOn','Attempt to run a power on of remote machines'],
+                        ['help','Display this help message'],
+                        ['pingCheck','Run a ping of all ip addresses specified in config file']]
+            if(arg == validArgs[0][0]):
                 mainHLPC.remoteShutdown()
-            elif(arg == validArgs[1]):
+            elif(arg == validArgs[1][0]):
                 mainHLPC.remotePowerOn()
-            elif(arg == validArgs[2]):
-                helpStr = ''
-                for validArg in validArgs:
-                    helpStr += f'{validArg} '
-                print(helpStr)
+            elif(arg == validArgs[2][0]):
+                for validArg in validArgs:    
+                    print(f'{validArg[0]}: {validArg[1]}') 
+            elif(arg == validArgs[3][0]):
+                mainHLPC.pingTest()
             else:
                 print('Unknown Argument')
-                print(f'Valid Arguments: {validArgs}')
+                helpStr = ''
+                for validArg in validArgs:
+                    helpStr += f'{validArg[0]} '
+                print(f'Valid Arguments: {helpStr}')
                 print('Exiting program')
         else:
             mainHLPC.mainMenu()
