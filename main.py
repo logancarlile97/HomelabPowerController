@@ -4,6 +4,8 @@ import logging
 from LcdDriver import LcdDriver
 import time
 import subprocess
+from CSVreader import CSVreader
+import sys
 
 class HLPC:
     """
@@ -65,7 +67,63 @@ class HLPC:
         """
         Method to run a remote shutdown of hosts via SSH. Uses CSV file specified in config.ini
         """
-        pass
+        log = self.log
+        lcd = self.lcd
+
+        log.warning(f'User is running HLPC shutdown')
+        shutdownCSV = CSVreader(self.config.getShutdownConfig('shutdownCSVfile'))
+        shutdownCSV.hasHeader() #Shutdown CSV is expected to have a header
+        remoteMachinesInfo = shutdownCSV.parseCSV() #Parse the csv file to a list of lists
+
+        for remoteInfo in remoteMachinesInfo: #Loop through each list in the the remoteMachinesInfo list
+            machineName = remoteInfo[0]
+            ipAddr = remoteInfo[1]
+            rmtUsr = remoteInfo[2]
+            cmd = remoteInfo[3]
+            pingCmd = f'ping -c 3 {ipAddr}'
+            sshCmd = f'ssh -t -t -o BatchMode=yes -o ConnectTimeout=15 {rmtUsr}@{ipAddr} \'{cmd}\'' 
+
+            log.debug(f'Current constructed ping command is: \n\t{pingCmd}')
+            log.debug(f'Current constructed ssh command is: \n\t{sshCmd}')
+            log.warning(f'Checking if {machineName} is alive')
+            lcd.print(f'Checking', f'{machineName}')
+            
+            ping = subprocess.run(pingCmd, shell=True, capture_output=True, text = True) #Run a ping command for the current machine
+            pingRtrnCode = ping.returncode #Capture return code
+            pingOutput = ping.stdout #Capture output
+            pingErrOutput = ping.stderr #Capture errors
+
+            log.info(f'Ping output for {machineName} is: \n{pingOutput}\n{pingErrOutput}')
+            log.info(f'Ping return code is: {pingRtrnCode}')
+            time.sleep(2)
+            
+            if(pingRtrnCode == 0): #If ping was succesful
+                lcd.print(f'{machineName}', 'is Alive')
+                time.sleep(2)
+                log.warning(f'{machineName} is alive')
+                
+                lcd.print(f'Shutting Down', f'{machineName}')
+                log.warning(f'Performing shutdown on {machineName} ({ipAddr}) via user {rmtUsr} using shutdown command {cmd}')
+                
+                ssh = subprocess.run(sshCmd, shell=True, capture_output=True, text = True)
+                sshErrOutput = ssh.stderr #Capture errors
+                sshOutput = ssh.stdout #Capture output
+                sshRtrnCode = ssh.returncode #Capture return code
+                
+                log.info(f'SSH output for {machineName} is: \n{sshOutput}\n{sshErrOutput}')
+                log.info(f'SSH return code is: {sshRtrnCode}')
+                if(sshRtrnCode != 0): #If ssh command was not succesful
+                    lcd.print(f'Error Please',f'Check Logs')
+                    log.error(f'Error shuting down {machineName}, ssh return code is: {sshRtrnCode}')
+                    log.error(f'SSH output: \n{sshOutput}\n{sshErrOutput}')
+                    time.sleep(3)
+                time.sleep(2)
+            else: #If ping was not succesful
+                log.warning(f'{machineName} was not determind to be alive, assumed dead')
+                lcd.print(f'{machineName}', f'is Dead')
+                time.sleep(2)
+        lcd.clear()
+
     def remotePowerOn(self):
         """
         Method to run a remote power on of hosts. Uses CSV file specified in config.ini.
@@ -116,7 +174,7 @@ class HLPC:
                     self.printIpAddr()
                 else:
                     lcd.clear()
-                    lcd.print('Unkown Input','')
+                    lcd.print('Unkown Input',' ')
                     time.sleep(1)
             
             lcd.clear()
@@ -128,6 +186,23 @@ class HLPC:
 if(__name__ == "__main__"):
     try:
         mainHLPC = HLPC()
-        mainHLPC.mainMenu()
+        if(len(sys.argv) > 1): #Check if user specified arguments
+            arg = str(sys.argv[1]) #Get the argument that user specified
+            validArgs = ['shutdown','powerOn','help']
+            if(arg == validArgs[0]):
+                mainHLPC.remoteShutdown()
+            elif(arg == validArgs[1]):
+                mainHLPC.remotePowerOn()
+            elif(arg == validArgs[2]):
+                helpStr = ''
+                for validArg in validArgs:
+                    helpStr += f'{validArg} '
+                print(helpStr)
+            else:
+                print('Unknown Argument')
+                print(f'Valid Arguments: {validArgs}')
+                print('Exiting program')
+        else:
+            mainHLPC.mainMenu()
     except KeyboardInterrupt:
         print('User exited program via Keyboard Interupt')

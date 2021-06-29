@@ -18,13 +18,14 @@ class CSVreader:
                             format = LOG_Format)
 
         self.logger = logging.getLogger()
+        self.logger.info(f'CSV reader has been setup with specified file: {file}')
 
     def hasHeader(self):
         """Change self.header to True if called. 
         This will tell parseCSV that the specified CSV file has a header."""
         log = self.logger #Setup logger in this method
 
-        log.debug(f'hasHeader method has been run')
+        log.debug(f'hasHeader method has been run for specified file: {self.file}')
         self.header = True
 
     def parseCSV(self):
@@ -33,7 +34,6 @@ class CSVreader:
         parsedCSV = []
         
         try:
-            log.info(f'CSV file {self.file} has been specified')
             file = open(self.file) #Open the csv file
             log.debug(f'Reading specified CSV file')
             csvFile = csv.reader(file, delimiter=',') #Read the csv file
@@ -62,11 +62,11 @@ class CSVreader:
             file.close()#Close the opened csv file
 
             log.debug(f'Removing whitspace from parsedCSV')
+            log.info(f'Parsed CSV file contains entries: ')
             for row in parsedCSV: #Loop through each item in parsedCSV and remove whitespace
                 for x in range(len(row)):
                     row[x] = row[x].lstrip()
                     row[x] = row[x].rstrip()
-            
-            log.info(f'Parsed CSV file contains entries: \n\t{parsedCSV}')
+                log.info(f'{row}')
             return parsedCSV 
             
