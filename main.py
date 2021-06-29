@@ -29,6 +29,9 @@ class HLPC:
         self.auth = Authenticator()
 
     def exitPrgm(self):
+        """
+        Makes user confirm they want to exit program
+        """
         self.lcd.print('Confirm: 2468#', 'Go Back: #')
         userConfirmation = self.keypad.input()
         if(userConfirmation == '2468'):
@@ -247,7 +250,7 @@ class HLPC:
 
             if (endPrgm == True): #Used to exit program and prevent an infinate loop  
                 log.debug('endPrgm has been set to True, program will end')
-                lcd.print('Program Ended','Via Keypad')
+                lcd.print('Program Ended','Via Keypad')#This message will remain on keypad until program is restarted or power is pulled from device
                 break
 
 if(__name__ == "__main__"):
