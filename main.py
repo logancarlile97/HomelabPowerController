@@ -121,7 +121,7 @@ class HLPC:
             ipList[x] = ipList[x].rstrip()
             ipList[x] = ipList[x].strip()
         for ip in ipList:
-            self.pingCheck(ip, ip) #Ping Check each listed ip
+            _ = self.pingCheck(ip, ip) #Ping Check each listed ip set to _ because it returns a bool
         
     def remoteShutdown(self):
         """
