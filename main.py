@@ -6,6 +6,7 @@ import time
 import subprocess
 from CSVreader import CSVreader
 import sys
+import os
 
 class HLPC:
     """
@@ -74,6 +75,57 @@ class HLPC:
 
         keypad.press() #Wait for user to press a key to contine
 
+    def pingCheck(self, ip, machineName):
+        """
+        Will ping ip and return True if sucessful
+        """
+        log = self.log
+        lcd = self.lcd
+
+        pingCmd = f'ping -c 3 {ip}'
+        log.debug(f'Current constructed ping command is: \n\t{pingCmd}')
+        log.info(f'Checking if {machineName} is alive')
+        lcd.print(f'Checking', f'{machineName}')
+        
+        ping = subprocess.run(pingCmd, shell=True, capture_output=True, text = True) #Run a ping command for the current machine
+        pingRtrnCode = ping.returncode #Capture return code
+        pingOutput = ping.stdout #Capture output
+        pingErrOutput = ping.stderr #Capture errors
+
+        log.info(f'Ping output for {machineName} is: \n{pingOutput}\n{pingErrOutput}')
+        log.info(f'Ping return code is: {pingRtrnCode}')
+        time.sleep(2)
+        
+        if(pingRtrnCode == 0): #If ping was sucessful
+            log.warning(f'{machineName} is alive')
+            lcd.print(f'{machineName}', 'is Alive')
+            time.sleep(2)
+            lcd.clear()
+            return True
+        else: #otherwise state machine could not be pinged
+            log.warning(f'{machineName} was not determind to be alive, assumed dead')
+            lcd.print(f'{machineName}', f'is Dead')
+            time.sleep(2)
+            lcd.clear()
+            return False
+
+    def pingTest(self):
+        """
+        Run a test ping of machines without performing any actions
+        """
+        config = self.config
+        log = self.log
+
+        log.warning(f'User requested ping test of HLPC')
+        ipListStr = config.getPingTestConfig('IPsToPing')
+        ipList = ipListStr.split(',')
+        for x in range(len(ipList)): #Remove whitespace from IP addresses
+            ipList[x] = ipList[x].lstrip()
+            ipList[x] = ipList[x].rstrip()
+            ipList[x] = ipList[x].strip()
+        for ip in ipList:
+            _ = self.pingCheck(ip, ip) #Ping Check each listed ip set to _ because it returns a bool
+        
     def remoteShutdown(self):
         """
         Method to run a remote shutdown of hosts via SSH. Uses CSV file specified in config.ini
@@ -91,28 +143,12 @@ class HLPC:
             ipAddr = remoteInfo[1]
             rmtUsr = remoteInfo[2]
             cmd = remoteInfo[3]
-            pingCmd = f'ping -c 3 {ipAddr}'
             sshCmd = f'ssh -t -t -o BatchMode=yes -o ConnectTimeout=15 {rmtUsr}@{ipAddr} \'{cmd}\'' 
 
-            log.debug(f'Current constructed ping command is: \n\t{pingCmd}')
-            log.debug(f'Current constructed ssh command is: \n\t{sshCmd}')
-            log.info(f'Checking if {machineName} is alive')
-            lcd.print(f'Checking', f'{machineName}')
+            pingResult = self.pingCheck(ipAddr, machineName) #Ping check remote machine
             
-            ping = subprocess.run(pingCmd, shell=True, capture_output=True, text = True) #Run a ping command for the current machine
-            pingRtrnCode = ping.returncode #Capture return code
-            pingOutput = ping.stdout #Capture output
-            pingErrOutput = ping.stderr #Capture errors
-
-            log.info(f'Ping output for {machineName} is: \n{pingOutput}\n{pingErrOutput}')
-            log.info(f'Ping return code is: {pingRtrnCode}')
-            time.sleep(2)
-            
-            if(pingRtrnCode == 0): #If ping was succesful
-                lcd.print(f'{machineName}', 'is Alive')
-                time.sleep(2)
-                log.warning(f'{machineName} is alive')
-                
+            if(pingResult == True): #If ping was succesful
+                log.debug(f'Current constructed ssh command is: \n\t{sshCmd}')
                 lcd.print(f'Shutting Down', f'{machineName}')
                 log.warning(f'Performing shutdown on {machineName} ({ipAddr}) via user {rmtUsr} using shutdown command {cmd}')
                 
@@ -130,9 +166,7 @@ class HLPC:
                     time.sleep(3)
                 time.sleep(2)
             else: #If ping was not succesful
-                log.warning(f'{machineName} was not determind to be alive, assumed dead')
-                lcd.print(f'{machineName}', f'is Dead')
-                time.sleep(2)
+                log.warning(f'Skipping shutdown of {machineName}')
         lcd.clear()
 
     def remotePowerOn(self):
@@ -151,25 +185,11 @@ class HLPC:
             machineName = remoteInfo[0]
             ipAddr = remoteInfo[1]
             cmd = remoteInfo[2]
-            pingCmd = f'ping -c 3 {ipAddr}'
 
-            log.debug(f'Current constructed ping command is: \n\t{pingCmd}')
-            log.info(f'Checking if {machineName} is alive')
-            lcd.print(f'Checking', f'{machineName}')
+            pingResult = self.pingCheck(ipAddr, machineName) #Run ping check on current host
 
-            ping = subprocess.run(pingCmd, shell=True, capture_output=True, text = True) #Run a ping command for the current machine
-            pingRtrnCode = ping.returncode #Capture return code
-            pingOutput = ping.stdout #Capture output
-            pingErrOutput = ping.stderr #Capture errors            
-
-            log.info(f'Ping output for {machineName} is: \n{pingOutput}\n{pingErrOutput}')
-            log.info(f'Ping return code is: {pingRtrnCode}')
-            time.sleep(2)
-
-            if(pingRtrnCode == 0): #If ping was succesful
-                lcd.print(f'{machineName}', 'is Alive')
-                time.sleep(2)
-                log.warning(f'{machineName} is alive')
+            if(pingResult == True): #If ping was succesful
+                pass
             else: #If ping was not succesful
                 log.warning(f'{machineName} was not determind to be alive, assumed dead')
                 lcd.print(f'{machineName}', f'is Dead')
@@ -202,13 +222,40 @@ class HLPC:
         log = self.log
         auth = self.auth #Will return true or false depending on if user could be verified
 
-        mainMenuPages = [['HLPC', 'Shutdown: A'],['HLPC','Power On: B'],['Display HLPC', 'IP Address: C'],['Exit HLPC','Program: D']] #Text to show depending on current main menu page, the second index determins top [0] or bottom [1] of LCD
+        mainMenuPages = [['HLPC', 'Shutdown: A'],
+                        ['HLPC','Power On: B'],
+                        ['Display HLPC', 'IP Address: C'],
+                        ['HLPC','Ping Check: 1'],
+                        ['Exit HLPC','Program: D']] #Text to show depending on current main menu page, the second index determins top [0] or bottom [1] of LCD
         crntMenuPage = 0
         pressedKey = ''
         pageIncrementKey = '#' #Key on keypad to be used to change mainMenuPage
 
         endPrgm = False #If this is set to True the main menu loop will end and the program will exit
 
+
+        #The following is an unecessary loading screen because I thought it would be cool
+        lcd.print('Homelab Power','Controller')
+        time.sleep(3)
+        lcd.print('Developed','By:')
+        time.sleep(2)
+        lcd.print('Wesley','Cooke')
+        time.sleep(2)
+        lcd.print('and',' ')
+        time.sleep(1)
+        lcd.print('Logan','Carlile')
+        time.sleep(2)
+        lcd.print('Loading',' ')
+        time.sleep(1)
+        lcd.print('Loading.',' ')
+        time.sleep(1)
+        lcd.print('Loading..',' ')
+        time.sleep(1)
+        lcd.print('Loading...',' ')
+        time.sleep(1)
+        lcd.print('','Done')
+        time.sleep(1)
+        
         lcd.print(mainMenuPages[crntMenuPage][0],mainMenuPages[crntMenuPage][1]) #Set initial menu page on LCD
         while(True): #Main loop
             pressedKey = keypad.press() #Get a keypress from user
@@ -241,6 +288,8 @@ class HLPC:
                         if(self.exitPrgm()):
                             endPrgm = True
                             log.warning('User has ended program via keypad')
+                elif (pressedKey == '1'):
+                    self.pingTest()
                 else:
                     lcd.clear()
                     lcd.print('Unkown Input',' ')
@@ -256,22 +305,30 @@ class HLPC:
 
 if(__name__ == "__main__"):
     try:
+        os.chdir(os.path.dirname(sys.argv[0])) #Set the current working directory
         mainHLPC = HLPC()
         if(len(sys.argv) > 1): #Check if user specified arguments
             arg = str(sys.argv[1]) #Get the argument that user specified
-            validArgs = ['shutdown','powerOn','help']
-            if(arg == validArgs[0]):
+            validArgs = [['shutdown','Attempt to run a shutdown of remote machines'],
+                        ['powerOn','Attempt to run a power on of remote machines'],
+                        ['help','Display this help message'],
+                        ['pingCheck','Run a ping of all ip addresses specified in config file']]
+            if(arg == validArgs[0][0]):
                 mainHLPC.remoteShutdown()
-            elif(arg == validArgs[1]):
+            elif(arg == validArgs[1][0]):
                 mainHLPC.remotePowerOn()
-            elif(arg == validArgs[2]):
-                helpStr = ''
-                for validArg in validArgs:
-                    helpStr += f'{validArg} '
-                print(helpStr)
+            elif(arg == validArgs[2][0]):
+                print(f'Valid Arguments')
+                for validArg in validArgs:    
+                    print(f'\t{validArg[0]}: \n\t\t{validArg[1]}') 
+            elif(arg == validArgs[3][0]):
+                mainHLPC.pingTest()
             else:
                 print('Unknown Argument')
-                print(f'Valid Arguments: {validArgs}')
+                helpStr = ''
+                for validArg in validArgs:
+                    helpStr += f'{validArg[0]} '
+                print(f'Valid Arguments: {helpStr}')
                 print('Exiting program')
         else:
             mainHLPC.mainMenu()
