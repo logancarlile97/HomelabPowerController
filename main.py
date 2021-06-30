@@ -189,7 +189,7 @@ class HLPC:
             pingResult = self.pingCheck(ipAddr, machineName) #Run ping check on current host
 
             if(pingResult == True): #If ping was succesful
-                log.warning(f'{machineName} is alive')
+                pass
             else: #If ping was not succesful
                 log.warning(f'{machineName} was not determind to be alive, assumed dead')
                 lcd.print(f'{machineName}', f'is Dead')
