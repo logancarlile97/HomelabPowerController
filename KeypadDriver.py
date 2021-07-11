@@ -99,7 +99,8 @@ class KeypadDriver:
 
                     # Set the column pin to
                     GPIO.output(COL[j], 1)
-
+                    time.sleep(0.0005) #Delay to prevent busy waiting
+                    
         # Print any other errors to terminal
         except Exception as e:
             log.error(f'KeypadDriver ran into an unexpected error: \n\t{e}')
@@ -150,7 +151,7 @@ class KeypadDriver:
                     # Set the column pin to
                     GPIO.output(COL[j], 1)
                     time.sleep(0.0005) #Delay to prevent busy waiting
-                    
+
         # Print any other errors to terminal
         except Exception as e:
             log.error(f'KeypadDriver ran into an unexpected error: \n\t{e}')
