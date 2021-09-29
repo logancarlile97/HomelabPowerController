@@ -17,6 +17,7 @@ class HLPC:
         self.config = ConfigReader('config.ini')
 
         #Create and configure logger
+
         LOG_Format = "%(levelname)s %(asctime)s - %(message)s"
         logging.basicConfig(filename = self.config.getLogConfig('logFile'),
                             level = self.config.getLogConfig('logLevel'),
@@ -33,6 +34,7 @@ class HLPC:
         """
         Makes user confirm they want to exit program
         """
+        
         self.lcd.print('Confirm: 2468#', 'Go Back: #')
         userConfirmation = self.keypad.input()
         if(userConfirmation == '2468'):
@@ -48,10 +50,21 @@ class HLPC:
         lcd = self.lcd
         keypad = self.keypad
 
-        hostname = subprocess.run('hostname', shell=True, capture_output=True, text = True).stdout #Command in linux to return hostname
-        ipAddress = subprocess.run('hostname -I', shell=True, capture_output=True, text = True).stdout #Command in linux to return currently set ipv4 addresses
-        hostname = hostname.strip() #Remove all escape sequences
-        ipAddress = ipAddress.strip()#Remove all escape sequences
+        #Command in linux to return hostname
+
+        hostname = subprocess.run('hostname', shell=True, capture_output=True, text = True).stdout 
+        
+        #Command in linux to return currently set ipv4 addresses
+
+        ipAddress = subprocess.run('hostname -I', shell=True, capture_output=True, text = True).stdout 
+        
+        #Remove all escape sequences
+
+        hostname = hostname.strip() 
+        
+        #Remove all escape sequences
+
+        ipAddress = ipAddress.strip()
             
         lcd.print('Press any key', 'to exit')
         time.sleep(2)
@@ -59,7 +72,10 @@ class HLPC:
         
         
         atEnd = False
-        for i in range(len(ipAddress)): #This for loop will scroll an ip that is too long to fit on the lcd
+        
+        #This for loop will scroll an ip that is too long to fit on the lcd
+
+        for i in range(len(ipAddress)): 
             shortIP = ''
             for x in range(16):
                 if (i+x >= len(ipAddress)):
@@ -72,8 +88,10 @@ class HLPC:
             if (atEnd):
                 lcd.print('', f'{ipAddress}')
                 break
-
-        keypad.press() #Wait for user to press a key to contine
+        
+        #Wait for user to press a key to contine
+        
+        keypad.press() 
 
     def pingCheck(self, ip, machineName):
         """
@@ -87,22 +105,38 @@ class HLPC:
         log.info(f'Checking if {machineName} is alive')
         lcd.print(f'Checking', f'{machineName}')
         
-        ping = subprocess.run(pingCmd, shell=True, capture_output=True, text = True) #Run a ping command for the current machine
-        pingRtrnCode = ping.returncode #Capture return code
-        pingOutput = ping.stdout #Capture output
-        pingErrOutput = ping.stderr #Capture errors
+        #Run a ping command for the current machine
+ 
+        ping = subprocess.run(pingCmd, shell=True, capture_output=True, text = True) 
+        
+        #Capture return code
+
+        pingRtrnCode = ping.returncode 
+        
+        #Capture output
+
+        pingOutput = ping.stdout 
+        
+        #Capture errors
+
+        pingErrOutput = ping.stderr 
 
         log.info(f'Ping output for {machineName} is: \n{pingOutput}\n{pingErrOutput}')
         log.info(f'Ping return code is: {pingRtrnCode}')
         time.sleep(2)
         
-        if(pingRtrnCode == 0): #If ping was sucessful
+        #If ping was sucessful
+
+        if(pingRtrnCode == 0): 
             log.warning(f'{machineName} is alive')
             lcd.print(f'{machineName}', 'is Alive')
             time.sleep(2)
             lcd.clear()
             return True
-        else: #otherwise state machine could not be pinged
+        
+        #otherwise state machine could not be pinged
+
+        else: 
             log.warning(f'{machineName} was not determind to be alive, assumed dead')
             lcd.print(f'{machineName}', f'is Dead')
             time.sleep(2)
@@ -119,12 +153,18 @@ class HLPC:
         log.warning(f'User requested ping test of HLPC')
         ipListStr = config.getPingTestConfig('IPsToPing')
         ipList = ipListStr.split(',')
-        for x in range(len(ipList)): #Remove whitespace from IP addresses
+        
+        #Remove whitespace from IP addresses
+
+        for x in range(len(ipList)): 
             ipList[x] = ipList[x].lstrip()
             ipList[x] = ipList[x].rstrip()
             ipList[x] = ipList[x].strip()
         for ip in ipList:
-            _ = self.pingCheck(ip, ip) #Ping Check each listed ip set to _ because it returns a bool
+            
+            #Ping Check each listed ip set to _ because it returns a bool
+
+            _ = self.pingCheck(ip, ip) 
         
     def remoteShutdown(self):
         """
@@ -135,37 +175,64 @@ class HLPC:
 
         log.warning(f'User is running HLPC shutdown')
         shutdownCSV = CSVreader(self.config.getShutdownConfig('shutdownCSVfile'))
-        shutdownCSV.hasHeader() #Shutdown CSV is expected to have a header
-        remoteMachinesInfo = shutdownCSV.parseCSV() #Parse the csv file to a list of lists
+        
+        #Shutdown CSV is expected to have a header
 
-        for remoteInfo in remoteMachinesInfo: #Loop through each list in the the remoteMachinesInfo list
+        shutdownCSV.hasHeader() 
+
+        #Parse the csv file to a list of lists
+
+        remoteMachinesInfo = shutdownCSV.parseCSV() 
+
+        #Loop through each list in the the remoteMachinesInfo list
+
+        for remoteInfo in remoteMachinesInfo: 
             machineName = remoteInfo[0]
             ipAddr = remoteInfo[1]
             rmtUsr = remoteInfo[2]
             cmd = remoteInfo[3]
             sshCmd = f'ssh -t -t -o BatchMode=yes -o ConnectTimeout=15 {rmtUsr}@{ipAddr} \'{cmd}\'' 
 
-            pingResult = self.pingCheck(ipAddr, machineName) #Ping check remote machine
+            #Ping check remote machine
+
+            pingResult = self.pingCheck(ipAddr, machineName) 
             
-            if(pingResult == True): #If ping was succesful
+            #If ping was succesful
+
+            if(pingResult == True): 
                 log.debug(f'Current constructed ssh command is: \n\t{sshCmd}')
                 lcd.print(f'Shutting Down', f'{machineName}')
                 log.warning(f'Performing shutdown on {machineName} ({ipAddr}) via user {rmtUsr} using shutdown command {cmd}')
                 
                 ssh = subprocess.run(sshCmd, shell=True, capture_output=True, text = True)
-                sshErrOutput = ssh.stderr #Capture errors
-                sshOutput = ssh.stdout #Capture output
-                sshRtrnCode = ssh.returncode #Capture return code
+                
+                #Capture errors
+
+                sshErrOutput = ssh.stderr
+
+                #Capture output
+                 
+                sshOutput = ssh.stdout 
+
+                #Capture return code
+
+                sshRtrnCode = ssh.returncode 
                 
                 log.info(f'SSH output for {machineName} is: \n{sshOutput}\n{sshErrOutput}')
                 log.info(f'SSH return code is: {sshRtrnCode}')
-                if(sshRtrnCode != 0): #If ssh command was not succesful
+
+                #If ssh command was not succesful
+
+                if(sshRtrnCode != 0): 
                     lcd.print(f'Error Please',f'Check Logs')
                     log.error(f'Error shuting down {machineName}, ssh return code is: {sshRtrnCode}')
                     log.error(f'SSH output: \n{sshOutput}\n{sshErrOutput}')
                     time.sleep(3)
                 time.sleep(2)
-            else: #If ping was not succesful
+
+            #If ping was not succesful
+            
+            else: 
                 log.warning(f'Skipping shutdown of {machineName}')
         lcd.clear()
 

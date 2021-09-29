@@ -12,29 +12,56 @@ class LcdDriver():
         self.config = ConfigReader('config.ini')
 
         # Assign each lcd pin to GPIO
-        lcd_rs = digitalio.DigitalInOut(board.D17)  # GPIO 17 pin 11
-        lcd_en = digitalio.DigitalInOut(board.D27)  # GPIO 27 pin 13
-        lcd_d4 = digitalio.DigitalInOut(board.D22)  # GPIO 22 pin 15
-        lcd_d5 = digitalio.DigitalInOut(board.D10)  # GPIO 10 pin 19
-        lcd_d6 = digitalio.DigitalInOut(board.D9)  # GPIO 9 pin 21
-        lcd_d7 = digitalio.DigitalInOut(board.D11)  # GPIO 11 pin 23
+
+        # GPIO 17 pin 11
+
+        lcd_rs = digitalio.DigitalInOut(board.D17)  
+        
+        # GPIO 27 pin 13
+
+        lcd_en = digitalio.DigitalInOut(board.D27)  
+        
+        # GPIO 22 pin 15
+
+        lcd_d4 = digitalio.DigitalInOut(board.D22)  
+        
+        # GPIO 10 pin 19
+
+        lcd_d5 = digitalio.DigitalInOut(board.D10)  
+        
+        # GPIO 9 pin 21
+
+        lcd_d6 = digitalio.DigitalInOut(board.D9)  
+        
+        # GPIO 11 pin 23
+
+        lcd_d7 = digitalio.DigitalInOut(board.D11)  
+        
         lcd_columns = 16
         lcd_rows = 2
 
-        self.lcd = characterLCD.Character_LCD_Mono(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, lcd_columns,
-                                                   lcd_rows)
+        self.lcd = characterLCD.Character_LCD_Mono(lcd_rs, 
+                                                    lcd_en, 
+                                                    lcd_d4, 
+                                                    lcd_d5, 
+                                                    lcd_d6, 
+                                                    lcd_d7, 
+                                                    lcd_columns,
+                                                    lcd_rows)
+        
         #Create and configure logger
+
         LOG_Format = "%(levelname)s %(asctime)s - %(message)s"
         logging.basicConfig(filename = self.config.getLogConfig('logFile'),
                             level = self.config.getLogConfig('logLevel'),
                             format = LOG_Format)
-
         self.logger = logging.getLogger()
 
     def print(self, top, bottom):
         """
         Prints top and bottom to the top and bottom of the lcd respectivly
         """
+        
         log = self.logger
 
         log.debug(f'lcd top message: {top}')
